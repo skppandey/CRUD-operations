@@ -1,0 +1,103 @@
+<core:View xmlns:core="sap.ui.core" 
+           xmlns:mvc="sap.ui.core.mvc" 
+           xmlns="sap.m" 
+           xmlns:l="sap.ui.layout" 
+           xmlns:f="sap.ui.layout.form"
+		   controllerName="tablebinding.view1" 
+		   xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="CRUD Operations">
+		<content>
+		<!-- <smartTable:SmartTable id="smartid" 
+					smartFilterId="smartFilterBar"  beforeRebindTable="onBeforeRebindTable"
+					initiallyVisibleFields="Empno"
+					entitySet="ztableset"
+					tableType="ResponsiveTable"  useVariantManagement="false"
+					useExportToExcel="true" useTablePersonalisation="true"
+					header="Recent Test Details" showRowCount="true" demandPopin="true"
+					enableAutoBinding="true" class="sapUiSmallMarginTop"/> -->
+<Table mode="MultiSelect"
+id="idEmployeTable"
+		inset="false"
+		items="{q_model>/results}">
+		<headerToolbar>
+			<Toolbar>
+				<Title text="Employee Details" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<columns>
+		
+			<Column>			
+				<Text text="Employee ID" />
+			</Column>
+			<Column>			
+				<Text text="First Name" />
+			</Column>
+			<Column>			
+				<Text text="Last Name" />
+			</Column>
+			<Column>			
+				<Text text="Address" />
+			</Column>
+			<Column>			
+				<Text text="Designation" />
+			</Column>
+			
+		</columns>
+		<items>
+			<ColumnListItem type="Active" press="onObjectListItemPress">
+				<cells>
+			 
+					<Text
+						text="{q_model>Empno}" />
+						<Text
+						text="{q_model>Fname}" />
+						<Text
+						text="{q_model>Lname}" />
+						<Text
+						text="{q_model>Addrs}" />
+						<Text
+						text="{q_model>Desgn}" />
+					
+					
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table> 
+	<Button id="IdDisplay" press="onDisplay" text="Display" />
+	<Button id="IdUpdate" press="onUpdate" text="Update" />
+	<Button id="IdCreate" press="onCreate" text="Create" />
+	<Button id="IdDelete" press="onDelete" text="Delete" />
+	
+	
+	
+	<VBox class="sapUiSmallMargin">
+	<l:Grid id="gridId">
+		
+	<f:SimpleForm id="SimpleFormChange354">
+			<f:content>
+				<Label text="Employee ID" />
+				<Input value="{new_model>/Empno}" id="empId" ></Input>
+				<Label text="First Name" />
+				<Input value="{new_model>/Fname}" id="fnameId"></Input>
+				<Label text="Last Name" />
+				<Input value="{new_model>/Lname}" id="lnameId"></Input>
+				<Label text="Address" />
+				<Input value="{new_model>/Addrs}" id="addrsId"></Input>
+				<Label text="Designation" />
+				<Input value="{new_model>/Desgn}" id="desgnId"></Input>
+				<!-- <Label text="{q_model>Empno}" /> -->
+				<Button id="saveBtnId" text="Save" press="onSave" />
+				
+			<!-- 	<layoutData>
+						<l:GridData span="L2 M2 S4" />
+					</layoutData> -->
+				
+				
+			</f:content>
+		</f:SimpleForm>
+		</l:Grid>
+		</VBox>
+
+		</content>
+	</Page>
+</core:View>
