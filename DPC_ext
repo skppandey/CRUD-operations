@@ -1,0 +1,104 @@
+# CRUD-operations DPC_EXT code
+
+ODATA----------
+
+Create***********************
+DATA: ls_request_input_data TYPE ztable_t,
+          ls_test type ztable_t.
+
+*    read request data
+    io_data_provider->read_entry_data( IMPORTING es_data = ls_request_input_data ).
+
+*    fill workareas to be interested
+
+    ls_test-empno = ls_request_input_data-empno.
+    ls_test-fname = ls_request_input_data-fname.
+    ls_test-lname = ls_request_input_data-lname.
+    ls_test-addrs = ls_request_input_data-addrs.
+    ls_test-desgn = ls_request_input_data-desgn.
+
+*    inset data into the table
+
+    INSERT ztable_t from ls_test.
+    if sy-subrc = 0.
+
+      er_entity = ls_request_input_data.
+      ENDIF.
+******************************
+
+
+Read*****************
+
+Data: ls_key_tab TYPE /iwbep/s_mgw_name_value_pair,
+          lv_empno type ztable_t-empno,
+          ls_test TYPE ztable_t.
+*    get key properties value
+    READ TABLE it_key_tab with key name = 'empno' INTO ls_key_tab.
+    lv_empno = ls_key_tab-name.
+
+*    get singlle record from table
+
+    SELECT SINGLE * from ztable_t INTO ls_test where empno = lv_empno.
+      if sy-subrc = 0.
+        MOVE-CORRESPONDING ls_test to  er_entity.
+        ENDIF.
+************************
+
+Update**********************
+
+DATA ls_request_input_data TYPE ztable_t.
+
+
+    io_data_provider->read_entry_data( IMPORTING es_data = ls_request_input_data ).
+
+    IF ls_request_input_data IS NOT INITIAL.
+      "Check to find whether user entered the proper request.
+
+      UPDATE ztable_t FROM ls_request_input_data.  "Updating Record
+
+      IF sy-subrc = 0.
+        MOVE-CORRESPONDING ls_request_input_data TO er_entity.
+        ELSE. "Wrong request!
+
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid  = /iwbep/cx_mgw_busi_exception=>business_error
+          message = text-002.
+      ENDIF.
+        ENDIF.
+
+******************************
+
+Get entity set*************************
+
+Data: lt_test type STANDARD TABLE OF ztable_t,
+          ls_test like LINE OF lt_test,
+          ls_entity like LINE OF et_entityset.
+
+    SELECT * from ztable_t into TABLE lt_test.
+      if sy-subrc = 0.
+        LOOP at lt_test into ls_test.
+          MOVE-CORRESPONDING ls_test to ls_entity.
+          append ls_entity to et_entityset.
+          CLEAR ls_test.
+          ENDLOOP.
+
+          ENDIF.
+*********************************************
+
+
+Delete*********************
+
+DATA: ls_key_tab TYPE /iwbep/s_mgw_name_value_pair,
+          lv_empno    TYPE ztable_t-empno.
+
+
+    "Reading the key values from the front end.
+    READ TABLE it_key_tab INTO ls_key_tab WITH KEY name = 'empno'.
+      lv_empno = ls_key_tab-value.
+       if lv_empno is not INITIAL.
+*         delete record from table
+        DELETE FROM ztable_t WHERE empno = lv_empno.
+
+      ENDIF.
+*******************************
